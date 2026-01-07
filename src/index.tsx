@@ -352,13 +352,24 @@ app.get('/home', (c) => {
             }
 
             .tier-icon {
-                width: 80px;
-                height: 80px;
+                width: 120px;
+                height: 120px;
                 margin: 0 auto 20px;
-                font-size: 48px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+            }
+
+            .tier-icon img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                filter: drop-shadow(0 4px 15px rgba(212, 175, 55, 0.3));
+                transition: transform 0.3s ease;
+            }
+
+            .tier-card:hover .tier-icon img {
+                transform: scale(1.1) rotate(5deg);
             }
 
             .tier-name {
@@ -503,15 +514,15 @@ app.get('/home', (c) => {
                 return '₩' + amount.toLocaleString('ko-KR');
             }
 
-            // Get color scheme emoji
-            function getTierIcon(colorScheme) {
-                const icons = {
-                    'bronze': '🥉',
-                    'gold': '🥇',
-                    'platinum': '💎',
-                    'diamond': '💠'
+            // Get tier image
+            function getTierImage(colorScheme) {
+                const images = {
+                    'bronze': '/images/bronze-box.png',
+                    'gold': '/images/gold-box.png',
+                    'platinum': '/images/platinum-box.png',
+                    'diamond': '/images/diamond-box.png'
                 };
-                return icons[colorScheme] || '🎁';
+                return images[colorScheme] || '/images/gold-box.png';
             }
 
             // Load tiers
@@ -538,7 +549,7 @@ app.get('/home', (c) => {
                         \${tier.is_best_choice ? '<div class="best-choice-badge">BEST CHOICE</div>' : ''}
                         
                         <div class="tier-icon">
-                            \${getTierIcon(tier.color_scheme)}
+                            <img src="\${getTierImage(tier.color_scheme)}" alt="\${tier.tier_name}">
                         </div>
 
                         <div class="tier-name">\${tier.tier_name_en}</div>
@@ -623,8 +634,20 @@ app.get('/tier/:code', async (c) => {
             }
 
             .tier-icon-large {
-                font-size: 80px;
-                margin-bottom: 16px;
+                width: 150px;
+                height: 150px;
+                margin: 0 auto 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .tier-icon-large img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                filter: drop-shadow(0 8px 30px rgba(212, 175, 55, 0.5));
+                animation: float 3s ease-in-out infinite;
             }
 
             .tier-name-large {
@@ -845,15 +868,15 @@ app.get('/tier/:code', async (c) => {
                 return (prob * 100).toFixed(2) + '%';
             }
 
-            // Get tier icon
-            function getTierIcon(colorScheme) {
-                const icons = {
-                    'bronze': '🥉',
-                    'gold': '🥇',
-                    'platinum': '💎',
-                    'diamond': '💠'
+            // Get tier image
+            function getTierImage(colorScheme) {
+                const images = {
+                    'bronze': '/images/bronze-box.png',
+                    'gold': '/images/gold-box.png',
+                    'platinum': '/images/platinum-box.png',
+                    'diamond': '/images/diamond-box.png'
                 };
-                return icons[colorScheme] || '🎁';
+                return images[colorScheme] || '/images/gold-box.png';
             }
 
             // Get reward icon
@@ -890,7 +913,7 @@ app.get('/tier/:code', async (c) => {
                 
                 const content = \`
                     <div class="tier-summary">
-                        <div class="tier-icon-large">\${getTierIcon(tier.color_scheme)}</div>
+                        <div class="tier-icon-large"><img src="\${getTierImage(tier.color_scheme)}" alt="\${tier.tier_name}"></div>
                         <div class="tier-name-large">\${tier.tier_name_en}</div>
                         <div class="tier-subtitle-large">\${tier.subtitle}</div>
                         <div class="tier-price-large">\${formatCurrency(tier.price)}</div>
@@ -1337,19 +1360,37 @@ app.get('/break/:orderId', async (c) => {
             }
 
             .cookie-icon {
-                font-size: 200px;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 animation: float 3s ease-in-out infinite;
                 filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.4));
+            }
+
+            .cookie-icon img {
+                width: 200px;
+                height: 200px;
+                object-fit: contain;
             }
 
             .hammer {
                 position: absolute;
                 top: -50px;
                 right: -30px;
-                font-size: 80px;
+                width: 100px;
+                height: 100px;
                 transform: rotate(-45deg);
                 animation: hammerStrike 0.8s ease-in-out;
                 opacity: 0;
+            }
+
+            .hammer img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                filter: drop-shadow(0 4px 15px rgba(212, 175, 55, 0.5));
             }
 
             .hammer.active {
@@ -1510,8 +1551,12 @@ app.get('/break/:orderId', async (c) => {
             <h1 class="break-title">BREAKING YOUR FORTUNE...</h1>
 
             <div class="fortune-cookie" id="fortuneCookie">
-                <div class="cookie-icon">🥠</div>
-                <div class="hammer" id="hammer">🔨</div>
+                <div class="cookie-icon" id="cookieIcon">
+                    <img src="/images/gold-box.png" alt="Fortune Cookie" id="cookieImage">
+                </div>
+                <div class="hammer" id="hammer">
+                    <img src="/images/hammer.png" alt="Golden Hammer">
+                </div>
             </div>
 
             <button class="tap-button" id="tapButton" onclick="breakBox()">
@@ -1599,7 +1644,7 @@ app.get('/break/:orderId', async (c) => {
                 }
             }
 
-            // Check order status
+            // Check order status and set tier image
             async function checkOrderStatus() {
                 try {
                     const response = await fetch('/api/orders/' + orderId);
@@ -1613,6 +1658,18 @@ app.get('/break/:orderId', async (c) => {
                         if (result.data.is_broken === 1) {
                             // Already broken, go to reward page
                             window.location.href = '/reward/' + orderId;
+                        }
+                        
+                        // Set correct tier image
+                        const tierImages = {
+                            'BRONZE': '/images/bronze-box.png',
+                            'GOLD': '/images/gold-box.png',
+                            'PLATINUM': '/images/platinum-box.png',
+                            'DIAMOND': '/images/diamond-box.png'
+                        };
+                        const cookieImage = document.getElementById('cookieImage');
+                        if (cookieImage && result.data.tier_code) {
+                            cookieImage.src = tierImages[result.data.tier_code] || '/images/gold-box.png';
                         }
                     }
                 } catch (error) {
