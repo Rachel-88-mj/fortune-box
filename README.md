@@ -8,8 +8,8 @@
 
 ## 🌐 라이브 URL
 
-- **Production**: https://3000-isudinvs6hwxhy8jz22wy-3844e1b6.sandbox.novita.ai
-- **GitHub Repository**: (배포 후 추가 예정)
+- **Sandbox Demo**: https://3000-isudinvs6hwxhy8jz22wy-3844e1b6.sandbox.novita.ai
+- **GitHub Repository**: https://github.com/Rachel-88-mj/fortune-box
 
 ---
 

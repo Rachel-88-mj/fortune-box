@@ -20,6 +20,7 @@ app.route('/api/shipping', shipping);
 
 // Serve static files (CSS, JS, images)
 app.use('/static/*', serveStatic({ root: './public' }));
+app.use('/images/*', serveStatic({ root: './public' }));
 
 // Health check
 app.get('/health', (c) => {
