@@ -587,18 +587,151 @@ app.get('/home', (c) => {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                position: relative;
             }
 
-            .tier-icon img {
+            /* CSS Fortune Cookie */
+            .fortune-cookie-css {
                 width: 100%;
                 height: 100%;
-                object-fit: contain;
-                filter: drop-shadow(0 4px 15px rgba(212, 175, 55, 0.3));
-                transition: transform 0.3s ease;
+                position: relative;
+                transform-style: preserve-3d;
+                animation: float 3s ease-in-out infinite;
             }
 
-            .tier-card:hover .tier-icon img {
+            .cookie-half-css {
+                position: absolute;
+                width: 55%;
+                height: 90%;
+                border-radius: 50%;
+                box-shadow: 
+                    0 10px 30px rgba(0, 0, 0, 0.3),
+                    inset 0 -5px 15px rgba(0, 0, 0, 0.3),
+                    inset 0 5px 15px rgba(255, 255, 255, 0.3);
+                transition: all 0.3s ease;
+            }
+
+            .cookie-half-left-css {
+                left: 5%;
+                top: 5%;
+                transform: rotate(-5deg);
+            }
+
+            .cookie-half-right-css {
+                right: 5%;
+                top: 5%;
+                transform: rotate(5deg);
+            }
+
+            /* Bronze Cookie */
+            .cookie-bronze .cookie-half-css {
+                background: linear-gradient(135deg, #CD7F32 0%, #B87333 30%, #8B4513 70%, #654321 100%);
+            }
+
+            /* Gold Cookie */
+            .cookie-gold .cookie-half-css {
+                background: linear-gradient(135deg, #FFD700 0%, #FFA500 30%, #D4AF37 70%, #B8860B 100%);
+            }
+
+            /* Platinum Cookie */
+            .cookie-platinum .cookie-half-css {
+                background: linear-gradient(135deg, #E8E8E8 0%, #C0C0C0 30%, #A8A8A8 70%, #808080 100%);
+            }
+
+            /* Diamond Cookie (holographic) */
+            .cookie-diamond .cookie-half-css {
+                background: linear-gradient(135deg, 
+                    #FFFFFF 0%, 
+                    #E0F7FF 15%,
+                    #FFEBFF 30%,
+                    #FFF5E0 45%,
+                    #E0FFE0 60%,
+                    #FFE0F0 75%,
+                    #E0E0FF 90%,
+                    #FFFFFF 100%);
+                animation: holographic 3s linear infinite;
+            }
+
+            @keyframes holographic {
+                0% { filter: hue-rotate(0deg); }
+                100% { filter: hue-rotate(360deg); }
+            }
+
+            /* Ornamental pattern overlay */
+            .cookie-half-css::before {
+                content: '';
+                position: absolute;
+                top: 10%;
+                left: 10%;
+                right: 10%;
+                bottom: 10%;
+                background-image: repeating-radial-gradient(
+                    circle at center,
+                    transparent 0,
+                    transparent 6px,
+                    rgba(255, 255, 255, 0.15) 6px,
+                    rgba(255, 255, 255, 0.15) 7px
+                );
+                border-radius: 50%;
+                opacity: 0.6;
+            }
+
+            /* Inner items */
+            .cookie-items-css {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                display: flex;
+                gap: 4px;
+                font-size: 20px;
+                z-index: 2;
+            }
+
+            .cookie-item-css {
+                animation: float 2s ease-in-out infinite;
+            }
+
+            .cookie-item-css:nth-child(2) {
+                animation-delay: 0.3s;
+            }
+
+            .cookie-item-css:nth-child(3) {
+                animation-delay: 0.6s;
+            }
+
+            /* Sparkle particles */
+            .cookie-sparkle {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: #FFD700;
+                border-radius: 50%;
+                animation: sparkle 2s ease-in-out infinite;
+                opacity: 0;
+            }
+
+            .cookie-sparkle:nth-child(5) { top: 10%; left: 20%; animation-delay: 0s; }
+            .cookie-sparkle:nth-child(6) { top: 20%; right: 15%; animation-delay: 0.5s; }
+            .cookie-sparkle:nth-child(7) { bottom: 20%; left: 15%; animation-delay: 1s; }
+            .cookie-sparkle:nth-child(8) { bottom: 15%; right: 20%; animation-delay: 1.5s; }
+
+            @keyframes sparkle {
+                0%, 100% { opacity: 0; transform: scale(0); }
+                50% { opacity: 1; transform: scale(1); }
+            }
+
+            /* Hover effect */
+            .tier-card:hover .fortune-cookie-css {
                 transform: scale(1.1) rotate(5deg);
+            }
+
+            .tier-card:hover .cookie-half-left-css {
+                transform: rotate(-10deg) translateX(-5px);
+            }
+
+            .tier-card:hover .cookie-half-right-css {
+                transform: rotate(10deg) translateX(5px);
             }
 
             .tier-name {
@@ -744,14 +877,20 @@ app.get('/home', (c) => {
             }
 
             // Get tier image
-            function getTierImage(colorScheme) {
-                const images = {
-                    'bronze': '/images/bronze-box.png',
-                    'gold': '/images/gold-box.png',
-                    'platinum': '/images/platinum-box.png',
-                    'diamond': '/images/diamond-box.png'
-                };
-                return images[colorScheme] || '/images/gold-box.png';
+            function getCookieHTML(colorScheme) {
+                return '<div class="fortune-cookie-css cookie-' + colorScheme + '">' +
+                    '<div class="cookie-half-css cookie-half-left-css"></div>' +
+                    '<div class="cookie-half-css cookie-half-right-css"></div>' +
+                    '<div class="cookie-items-css">' +
+                        '<span class="cookie-item-css">💎</span>' +
+                        '<span class="cookie-item-css">⌚</span>' +
+                        '<span class="cookie-item-css">🏆</span>' +
+                    '</div>' +
+                    '<span class="cookie-sparkle"></span>' +
+                    '<span class="cookie-sparkle"></span>' +
+                    '<span class="cookie-sparkle"></span>' +
+                    '<span class="cookie-sparkle"></span>' +
+                '</div>';
             }
 
             // Load tiers
@@ -778,7 +917,7 @@ app.get('/home', (c) => {
                         \${tier.is_best_choice ? '<div class="best-choice-badge">BEST CHOICE</div>' : ''}
                         
                         <div class="tier-icon">
-                            <img src="\${getTierImage(tier.color_scheme)}" alt="\${tier.tier_name}">
+                            \${getCookieHTML(tier.color_scheme)}
                         </div>
 
                         <div class="tier-name">\${tier.tier_name_en}</div>
@@ -869,14 +1008,7 @@ app.get('/tier/:code', async (c) => {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-            }
-
-            .tier-icon-large img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                filter: drop-shadow(0 8px 30px rgba(212, 175, 55, 0.5));
-                animation: float 3s ease-in-out infinite;
+                position: relative;
             }
 
             .tier-name-large {
@@ -1098,14 +1230,20 @@ app.get('/tier/:code', async (c) => {
             }
 
             // Get tier image
-            function getTierImage(colorScheme) {
-                const images = {
-                    'bronze': '/images/bronze-box.png',
-                    'gold': '/images/gold-box.png',
-                    'platinum': '/images/platinum-box.png',
-                    'diamond': '/images/diamond-box.png'
-                };
-                return images[colorScheme] || '/images/gold-box.png';
+            function getCookieHTML(colorScheme) {
+                return '<div class="fortune-cookie-css cookie-' + colorScheme + '">' +
+                    '<div class="cookie-half-css cookie-half-left-css"></div>' +
+                    '<div class="cookie-half-css cookie-half-right-css"></div>' +
+                    '<div class="cookie-items-css">' +
+                        '<span class="cookie-item-css">💎</span>' +
+                        '<span class="cookie-item-css">⌚</span>' +
+                        '<span class="cookie-item-css">🏆</span>' +
+                    '</div>' +
+                    '<span class="cookie-sparkle"></span>' +
+                    '<span class="cookie-sparkle"></span>' +
+                    '<span class="cookie-sparkle"></span>' +
+                    '<span class="cookie-sparkle"></span>' +
+                '</div>';
             }
 
             // Get reward icon
@@ -1142,7 +1280,7 @@ app.get('/tier/:code', async (c) => {
                 
                 const content = \`
                     <div class="tier-summary">
-                        <div class="tier-icon-large"><img src="\${getTierImage(tier.color_scheme)}" alt="\${tier.tier_name}"></div>
+                        <div class="tier-icon-large">\${getCookieHTML(tier.color_scheme)}</div>
                         <div class="tier-name-large">\${tier.tier_name_en}</div>
                         <div class="tier-subtitle-large">\${tier.subtitle}</div>
                         <div class="tier-price-large">\${formatCurrency(tier.price)}</div>
